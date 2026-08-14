@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { websocketClient } from '../services/websocketClient';
-import { LocationRecord, ResultSource } from '../types/location';
+import { LocationRecord } from '../types/location';
 
 const DEBOUNCE_MS = 400;
 const MIN_QUERY_LENGTH = 2;
@@ -14,7 +14,7 @@ function nextRequestId(): string {
 export function useLocationSearch() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<LocationRecord[]>([]);
-  const [source, setSource] = useState<ResultSource | null>(null);
+  const [similarResults, setSimilarResults] = useState<LocationRecord[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [savingLocation, setSavingLocation] = useState<string | null>(null);
@@ -30,7 +30,7 @@ export function useLocationSearch() {
           return;
         }
         setResults(message.data);
-        setSource(message.source);
+        setSimilarResults(message.similar);
         setLoading(false);
       } else if (message.type === 'location_saved') {
         setSavingLocation(null);
@@ -50,7 +50,7 @@ export function useLocationSearch() {
     if (trimmed.length < MIN_QUERY_LENGTH) {
       activeRequestId.current = null;
       setResults([]);
-      setSource(null);
+      setSimilarResults([]);
       setLoading(false);
       setError(null);
       return;
@@ -80,5 +80,5 @@ export function useLocationSearch() {
     });
   }, []);
 
-  return { query, setQuery, results, source, loading, error, savingLocation, selectLocation };
+  return { query, setQuery, results, similarResults, loading, error, savingLocation, selectLocation };
 }
