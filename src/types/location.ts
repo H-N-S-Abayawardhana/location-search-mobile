@@ -1,8 +1,11 @@
 export interface LocationRecord {
   id?: number;
+  // Present for unsaved Google Places predictions, which don't carry
+  // coordinates until resolved via a Place Details lookup on save.
+  placeId?: string;
   name: string;
-  latitude: number;
-  longitude: number;
+  latitude: number | null;
+  longitude: number | null;
   address: string | null;
 }
 
@@ -15,9 +18,10 @@ export interface SearchLocationMessage {
 export interface SaveLocationMessage {
   type: 'save_location';
   location: {
+    placeId?: string;
     name: string;
-    latitude: number;
-    longitude: number;
+    latitude: number | null;
+    longitude: number | null;
     address: string | null;
   };
 }

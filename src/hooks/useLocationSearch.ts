@@ -72,6 +72,7 @@ export function useLocationSearch() {
     websocketClient.send({
       type: 'save_location',
       location: {
+        placeId: location.placeId,
         name: location.name,
         latitude: location.latitude,
         longitude: location.longitude,
